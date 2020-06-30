@@ -1,0 +1,103 @@
+{% extends "elections.html" %}
+
+{% block navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href="/wiki-elections">Անհատական</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="/wiki-elections/bulk">Մասնակիցների խումբ</a>
+    </li>
+{% endblock %}
+
+{% block formhead %}
+    <form action="#" id="mainform" method="GET">
+{% endblock %}
+
+{% block usersinput %}
+    <div class="form-group">
+        <label for="username">Մասնակիցների անուններ</label>
+        <textarea rows="6" autocomplete="off" type="text" class="form-control" id="username"
+                  name="name"
+                  placeholder="Մասնակից 1
+Մասնակից 2
+...
+
+Կամ կարող եք տեղադրել Վիքիտեքստ, որտեղ կլինեն մասնակիցների ստորագրությունները" required></textarea>
+    </div>
+{% endblock %}
+{% block result %}
+    <div class="d-flex justify-content-center">
+        <div id="spinner" class="spinner-border" role="status" style="display: none;">
+            <span class="sr-only">Սպասել...</span>
+        </div>
+    </div>
+    <ul id="usersList" class="list-group">
+    </ul>
+{% endblock %}
+{% block myjs %}
+    <script type="application/javascript">
+        //$('#spinner').hide();
+        let numberOfUsers = 0;
+        const form = document.getElementById('mainform');
+        const remove_duplicates = function (arr) {
+            const obj = {};
+            const result = [];
+            for (let i = 0; i < arr.length; i++) {
+                obj[arr[i]] = true;
+            }
+            for (let key in obj) {
+                result.push(key);
+            }
+            return result;
+        }
+
+        const getUsers = function (text) {
+            const regex = /\[\[(?:user|մասնակից):([^|\]/]+?)\|/ig;
+            const matches = [];
+            let match;
+            while (match = regex.exec(text)) {
+                matches.push(match[1]);
+            }
+            return remove_duplicates(matches);
+        }
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            $('#spinner').show();
+            let users = getUsers(form.elements[0].value);
+            if (users.length === 0) {
+                users = remove_duplicates(form.elements[0].value.split('\n'));
+            }
+            numberOfUsers = users.length;
+            users.forEach((user) => {
+                const url = 'http://127.0.0.1:5000/wiki-elections?format=json&name=' + user + '&election=' + form.elements[1].value + '&dateFrom=' + form.elements[2].value;
+                $('#usersList').empty();
+                $.getJSON(url, function (userdata) {
+                    let bool = true;
+                    userdata.forEach((ent) => {
+                        bool = bool && ent[1];
+                    })
+                    if (bool) {
+                        $('#usersList').append($("<li>")
+                            .addClass('list-group-item')
+                            .addClass('list-group-item-success')
+                            .append($('<a target="_blank" href="https://hy.wikipedia.org/wiki/User:' + user + '">' + user + '</a>, <a target="_blank" href="' + url.replace('format=json&', '') + '">Իրավունք ունի</a>')));
+                    } else {
+                        $('#usersList').append($("<li>")
+                            .addClass('list-group-item')
+                            .addClass('list-group-item-danger')
+                            .append($('<a target="_blank" href="https://hy.wikipedia.org/wiki/User:' + user + '">' + user + '</a>, <a target="_blank" href="' + url.replace('format=json&', '') + '">Իրավունք չունի</a>')));
+                    }
+                });
+            });
+            const targetNode = document.getElementById('usersList');
+            const config = {attributes: false, childList: true, subtree: false};
+            const callback = function (mutationsList, observer) {
+                if (targetNode.children.length === numberOfUsers) {
+                    $('#spinner').hide();
+                }
+            };
+            const observer = new MutationObserver(callback);
+            observer.observe(targetNode, config);
+        })
+    </script>
+{% endblock %}

@@ -99,13 +99,13 @@ def base_analyse(stats, experience, edits, edits0, edits0m, edit1m, edit2m, edit
     else:
         msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին համապատասխանաբար ' + str(edit1m) + ', ' + str(
             edit2m) + ' և ' + str(edit3m) + ' գործողություն'
-    result = [(int(stats[0]), stats[0] >= experience, msg['experience']),
-              (stats[1], stats[1] >= edits, msg['edits']),
-              (stats[2], stats[2] >= edits0, msg['edits_0']),
-              (stats[3], stats[3] >= edits0m, msg['edits0m']),
-              (', '.join([str(stats[4]).replace('1000', '1000+'), str(stats[5]).replace('1000', '1000+'),
+    result = [[int(stats[0]), stats[0] >= experience, msg['experience']],
+              [stats[1], stats[1] >= edits, msg['edits']],
+              [stats[2], stats[2] >= edits0, msg['edits_0']],
+              [stats[3], stats[3] >= edits0m, msg['edits0m']],
+              [', '.join([str(stats[4]).replace('1000', '1000+'), str(stats[5]).replace('1000', '1000+'),
                           str(stats[6]).replace('1000', '1000+')]),
-               stats[4] >= edit1m and stats[5] >= edit2m and stats[6] >= edit3m, msg['last'])]
+               stats[4] >= edit1m and stats[5] >= edit2m and stats[6] >= edit3m, msg['last']]]
     return result
 
 
@@ -151,7 +151,7 @@ def deletion(user, start_date):
     months = (start_date - user_reg).days / 30
     user_edits = edits(user, start_date)
     user_edits_0 = edits_0(user, start_date)
-    result = [(int(months), months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'),
-              (user_edits, user_edits >= 500, 'Առնվազն 500 խմբագրում'),
-              (user_edits_0, user_edits_0 >= 100, 'Առնվազն 500 խմբագրում հոդվածում')]
+    result = [[int(months), months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'],
+              [user_edits, user_edits >= 500, 'Առնվազն 500 խմբագրում'],
+              [user_edits_0, user_edits_0 >= 100, 'Առնվազն 500 խմբագրում հոդվածում']]
     return result

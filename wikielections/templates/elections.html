@@ -14,18 +14,36 @@
 </head>
 <body>
 <div class="container">
-    <div class="page-header">
-        <h2>Ստուգել Հայերեն Վիքիպեդիայում մասնակցի քվեարկելու իրավունքը</h2>
-    </div>
-    <form action="/wiki-elections" method="GET">
-        <div class="form-group">
-            <label for="username">Մասնակցային անուն</label>
-            <input autocomplete="off" type="text" class="form-control" id="username" list="usernames"
-                   value="{{ getargs.name }}"
-                   name="name"
-                   placeholder="Մասնակցային անուն" required>
-            <datalist id="usernames"></datalist>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                {% block navbar %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="/wiki-elections">Անհատական</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/wiki-elections/bulk">Մասնակիցների խումբ</a>
+                </li>
+                {% endblock %}
+            </ul>
+            <span class="navbar-text">
+      Ստուգել Հայերեն Վիքիպեդիայում մասնակիցների քվեարկելու իրավունքը
+    </span>
         </div>
+    </nav>
+{% block formhead %}
+    <form id="mainform" method="GET">
+{% endblock %}
+        {% block usersinput %}
+            <div class="form-group">
+                <label for="username">Մասնակցային անուն</label>
+                <input autocomplete="off" type="text" class="form-control" id="username" list="usernames"
+                       value="{{ getargs.name }}"
+                       name="name"
+                       placeholder="Մասնակցային անուն" required>
+                <datalist id="usernames"></datalist>
+            </div>
+        {% endblock %}
         <div class="form-group">
             <label for="election">Քվեարկություն</label>
             <select name="election" class="form-control" id="election" required>
@@ -44,46 +62,50 @@
                    required>
         </div>
         <input type="submit" class="btn btn-primary mb-2" value="Ստուգել"/>
+
     </form>
-    {% if data %}
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th style="width: 60%" scope="col">Անհրաժեշտ է</th>
-                <th style="width: 25%" scope="col">Ունի</th>
-                <th style="width: 15%" scope="col">Բավարարո՞ւմ է</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for row in data %}
-                <tr class="{% if row[1] %}bg-success{% else %}bg-danger{% endif %}">
-                    <td>{{ row[2] }}</td>
-                    <td>{{ row[0] }}{% if row[0] == 1000 %}+{% endif %}</td>
-                    <td>{% if row[1] %}
-                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-all" fill="currentColor"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                  d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"></path>
-                            <path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"></path>
-                        </svg>
-                    {% else %}
-                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                  d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"></path>
-                            <path fill-rule="evenodd"
-                                  d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"></path>
-                        </svg>
-                    {% endif %}
-                    </td>
+    {% block result %}
+        {% if data %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 60%" scope="col">Անհրաժեշտ է</th>
+                    <th style="width: 25%" scope="col">Ունի</th>
+                    <th style="width: 15%" scope="col">Բավարարո՞ւմ է</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-    {% if error %}
-        {{ error }}
-    {% endif %}
+                </thead>
+                <tbody>
+                {% for row in data %}
+                    <tr class="{% if row[1] %}bg-success{% else %}bg-danger{% endif %}">
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[0] }}{% if row[0] == 1000 %}+{% endif %}</td>
+                        <td>{% if row[1] %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-all"
+                                 fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"></path>
+                                <path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"></path>
+                            </svg>
+                        {% else %}
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"></path>
+                                <path fill-rule="evenodd"
+                                      d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"></path>
+                            </svg>
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {% if error %}
+            {{ error }}
+        {% endif %}
+    {% endblock %}
     <footer class="footer">
         <p class="text-sm-center"><small>Թերությունների կամ առաջարկների դեպքում գրել <a
                 href="https://hy.wikipedia.org/wiki/%D5%84%D5%A1%D5%BD%D5%B6%D5%A1%D5%AF%D6%81%D5%AB_%D6%84%D5%B6%D5%B6%D5%A1%D6%80%D5%AF%D5%B8%D6%82%D5%B4:%D4%B1%D5%B7%D5%B8%D5%BF%D5%8F%D5%86%D5%82">ԱշոտՏՆՂ</a>
@@ -103,39 +125,40 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
+{% block myjs %}
+    <script type="application/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        let timeout = null;
+        $('#username').on('keyup', function (e) {
+            var that = e;
+            if (timeout !== null) {
+                clearTimeout(timeout);
+            }
+            timeout = setTimeout(function () {
+                const val = that.target.value.trim()
+                $.ajax({
+                    type: 'GET',
+                    crossDomain: true,
+                    dataType: 'jsonp',
+                    url: 'https://hy.wikipedia.org/w/api.php?action=opensearch&limit=20&format=json&search=Մասնակից:' + val,
 
-<script type="application/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-    let timeout = null;
-    $('#username').on('keyup', function (e) {
-        var that = e;
-        if (timeout !== null) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(function () {
-            const val = that.target.value.trim()
-            $.ajax({
-                type: 'GET',
-                crossDomain: true,
-                dataType: 'jsonp',
-                url: 'https://hy.wikipedia.org/w/api.php?action=opensearch&limit=20&format=json&search=Մասնակից:' + val,
-
-                success: function (jsondata) {
-                    const suggestedUsernames = jsondata[1].map(x => x.replace('Մասնակից:', '')).filter(x => !x.includes('/'));
-                    $("#usernames").empty();
-                    if (val.length >= 1) {
-                        $.each(suggestedUsernames, function (i, item) {
-                            if (i < 5) {
-                                $("#usernames").append($("<option>").text(item));
-                            }
-                        });
+                    success: function (jsondata) {
+                        const suggestedUsernames = jsondata[1].map(x => x.replace('Մասնակից:', '')).filter(x => !x.includes('/'));
+                        $("#usernames").empty();
+                        if (val.length >= 1) {
+                            $.each(suggestedUsernames, function (i, item) {
+                                if (i < 5) {
+                                    $("#usernames").append($("<option>").text(item));
+                                }
+                            });
+                        }
                     }
-                }
-            })
-        }, 500);
-    });
-</script>
+                })
+            }, 500);
+        });
+    </script>
+{% endblock %}
 </body>
 </html>
