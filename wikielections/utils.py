@@ -34,7 +34,6 @@ def edits(user, start_date, end_date=None, ns=None):
     uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
     contrb_num = len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
     while uccontinue and contrb_num < 1000:
-        print(uccontinue)
         r = requests.get(url=API_URL, params={
             "action": "query",
             "format": "json",
@@ -66,25 +65,26 @@ def registration_date(user):
     })
     jsn = r.json()
     if 'query' in jsn and 'users' in jsn['query'] and 'registration' in jsn['query']['users'][0]:
-        print(datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ"))
         return datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ")
     return None
 
 
 def base_stats(user, start_date):
     user_reg = registration_date(user)
-    months = (start_date - user_reg).days / 30
-    user_edits = edits(user, start_date)
-    user_edits_0 = edits_0(user, start_date)
-    edits_last_month = edits(user, start_date, start_date - datetime.timedelta(days=31))
-    edits_2last_month = edits(user, start_date - datetime.timedelta(days=31),
-                              start_date - datetime.timedelta(days=2 * 31))
-    edits_3last_month = edits(user, start_date - datetime.timedelta(days=2 * 31),
-                              start_date - datetime.timedelta(days=3 * 31))
-    edits_4last_month = edits(user, start_date - datetime.timedelta(days=3 * 31),
-                              start_date - datetime.timedelta(days=4 * 31))
+    if user_reg:
+        months = (start_date - user_reg).days / 30
+        user_edits = edits(user, start_date)
+        user_edits_0 = edits_0(user, start_date)
+        edits_last_month = edits(user, start_date, start_date - datetime.timedelta(days=31))
+        edits_2last_month = edits(user, start_date - datetime.timedelta(days=31),
+                                  start_date - datetime.timedelta(days=2 * 31))
+        edits_3last_month = edits(user, start_date - datetime.timedelta(days=2 * 31),
+                                  start_date - datetime.timedelta(days=3 * 31))
+        edits_4last_month = edits(user, start_date - datetime.timedelta(days=3 * 31),
+                                  start_date - datetime.timedelta(days=4 * 31))
 
-    return months, user_edits, user_edits_0, edits_last_month, edits_2last_month, edits_3last_month, edits_4last_month
+        return months, user_edits, user_edits_0, edits_last_month, edits_2last_month, edits_3last_month, edits_4last_month
+    return 0, 0, 0, 0, 0, 0, 0
 
 
 def base_analyse(stats, experience, edits, edits0, edits0m, edit1m, edit2m, edit3m):
