@@ -6,19 +6,13 @@ def timestamp_to_datetime(timestamp):
     if type(timestamp) == int:
         timestamp = str(timestamp)
     if len(timestamp) == 14:
-        print(timestamp)
-        return datetime.datetime(int(timestamp[0:4]),
-                                 int(timestamp[4:6]),
-                                 int(timestamp[6:8]),
-                                 int(timestamp[8:10]),
-                                 int(timestamp[10:12]),
-                                 int(timestamp[12:14]))
+        return datetime.datetime.strptime(timestamp, '%Y%m%d%H%M%S')
     return None
 
 
 def datetime_to_timestamp(date):
     if type(date) == datetime.datetime:
-        return str(date.year) + str(date.month) + str(date.day) + str(date.hour) + str(date.minute) + str(date.second)
+        return date.strftime('%Y%m%d%H%M%S')
     return None
 
 
