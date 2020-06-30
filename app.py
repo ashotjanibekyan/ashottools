@@ -1,10 +1,25 @@
 import os
-from flask import Flask, request, render_template
+from randompage import randompage
+from flask import Flask, request, render_template, send_from_directory, redirect
 from wikielections.utils import *
 import datetime
 
 app = Flask(__name__)
 
+
+@app.errorhandler(404)
+def handle_error(error):
+    return index()
+
+
+@app.route('/')
+def index():
+    return send_from_directory('static', filename='index.html')
+
+
+@app.route('/random')
+def random():
+    return redirect('https://hy.wikipedia.org/wiki/' + randompage.get_random_not_bot())
 
 @app.route('/wiki-elections', methods=['GET', 'POST'])
 def elections():
