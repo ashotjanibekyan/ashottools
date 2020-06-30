@@ -26,7 +26,7 @@ def random():
 def elections():
     app.template_folder = os.path.abspath('./wikielections/templates')
     getargs = request.args.to_dict()
-    if 'election' in getargs and 'name' in getargs and 'dateFrom' in getargs:
+    if 'election' in getargs and getargs['election'] and 'name' in getargs and getargs['name'] and 'dateForm' in getargs and getargs['dateForm']:
         date = datetime.datetime.strptime(getargs['dateFrom'], '%Y-%m-%d')
         if getargs['election'] == '1':
             try:
@@ -54,7 +54,7 @@ def elections():
             except Exception as e:
                 return render_template('elections.html', error=str(e), getargs=getargs)
 
-    return render_template('elections.html', data={}, getargs={})
+    return render_template('elections.html', data={}, getargs=getargs)
 
 
 if __name__ == '__main__':
