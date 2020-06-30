@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="hy">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/9/92/Roman_Election.jpg">
+    <title>Ընտրություններ Հայերեն Վիքիպեդիայում</title>
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h2>Ստուգել Հայերեն Վիքիպեդիայում մասնակցի քվեարկելու իրավունքը</h2>
+    </div>
+    <form action="/wiki-elections" method="GET">
+        <div class="form-group">
+            <label for="username">Մասնակցային անուն</label>
+            <input type="text" class="form-control" id="username" value="{{ getargs.name }}" name="name"
+                   placeholder="Մասնակցային անուն" required>
+        </div>
+        <div class="form-group">
+            <label for="election">Քվեարկություն</label>
+            <select name="election" class="form-control" id="election" required>
+                <option value="1"{% if getargs.election == '1' %} selected {% endif %}>Տարվա հոդված</option>
+                <option value="2"{% if getargs.election == '2' %} selected {% endif %}>Ընտրյալ հոդած</option>
+                <option value="3"{% if getargs.election == '3' %} selected {% endif %}>Լավ հոդված</option>
+                <option value="4"{% if getargs.election == '4' %} selected {% endif %}>Ադմինիստրատորի իրավունքների
+                    դիմում
+                </option>
+                <option value="5"{% if getargs.election == '5' %} selected {% endif %}>Հոդվածի ջնջում</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="dateFrom">Քվեարկությունը սկսվել է</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="{{ getargs.dateFrom }}"
+                   required>
+        </div>
+        <input type="submit" class="btn btn-primary mb-2" value="Սոտւգել"/>
+    </form>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th style="width: 60%" scope="col">Անհրաժեշտ է</th>
+            <th style="width: 25%" scope="col">
+                <span data-toggle="tooltip" data-placement="top" title="Առնվազն">Ունի</span>
+            </th>
+            <th style="width: 15%" scope="col">Բավարարո՞ւմ է</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr class="{% if row[1] %}bg-success{% else %}bg-danger{% endif %}">
+                <td>{{ row[2] }}</td>
+                <td>{{ row[0] }}</td>
+                <td>{% if row[1] %}
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-all" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M12.354 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"></path>
+                        <path d="M6.25 8.043l-.896-.897a.5.5 0 1 0-.708.708l.897.896.707-.707zm1 2.414l.896.897a.5.5 0 0 0 .708 0l7-7a.5.5 0 0 0-.708-.708L8.5 10.293l-.543-.543-.707.707z"></path>
+                    </svg>
+                {% else %}
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"></path>
+                        <path fill-rule="evenodd"
+                              d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"></path>
+                    </svg>
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <footer class="footer">
+        <p class="text-sm-center"><small>Թերությունների կամ առաջարկների դեպքում գրել <a href="https://hy.wikipedia.org/wiki/%D5%84%D5%A1%D5%BD%D5%B6%D5%A1%D5%AF%D6%81%D5%AB_%D6%84%D5%B6%D5%B6%D5%A1%D6%80%D5%AF%D5%B8%D6%82%D5%B4:%D4%B1%D5%B7%D5%B8%D5%BF%D5%8F%D5%86%D5%82">ԱշոտՏՆՂ</a>
+		 մասնակցին</small></p>
+    </footer>
+</body>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+</body>
+</html>
