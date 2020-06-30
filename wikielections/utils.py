@@ -148,9 +148,9 @@ def deletion(user, start_date):
     # Նվազագույնը 500 գործողություն
     # Նվազագույնը 100 գործողություն հոդվածներում
     user_reg = registration_date(user)
-    months = (start_date - user_reg).days / 30
-    user_edits = edits(user, start_date)
-    user_edits_0 = edits_0(user, start_date)
+    months = (start_date - user_reg).days / 30 if user_reg else 0
+    user_edits = edits(user, start_date) if user_reg else 0
+    user_edits_0 = edits_0(user, start_date) if user_reg else 0
     result = [[int(months), months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'],
               [user_edits, user_edits >= 500, 'Առնվազն 500 խմբագրում'],
               [user_edits_0, user_edits_0 >= 100, 'Առնվազն 500 խմբագրում հոդվածում']]
