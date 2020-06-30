@@ -141,3 +141,5 @@ def deletion(user, start_date):
               (user_edits, user_edits >= 500, 'Առնվազն 500 խմբագրում'),
               (user_edits_0, user_edits_0 >= 100, 'Առնվազն 500 խմբագրում հոդվածում')]
     return result
+
+#test
