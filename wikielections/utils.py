@@ -29,7 +29,7 @@ def edits(user, start_date, end_date=None):
         end_date = datetime_to_timestamp(end_date)
     else:
         end_date = '00000000000000'
-    with open('./queries/edits.sql', 'r') as sql:
+    with open('./wikielections/queries/edits.sql', 'r') as sql:
         query = sql.read()
         query = query.replace('USERNAME', user)
         query = query.replace('STARTDATE', start_date)
@@ -43,7 +43,7 @@ def edits(user, start_date, end_date=None):
 def edits_0(user, start_date):
     conn = toolforge.connect('hywiki')
     start_date = datetime_to_timestamp(start_date)
-    with open('./queries/edits_0.sql', 'r') as sql:
+    with open('./wikielections/queries/edits_0.sql', 'r') as sql:
         query = sql.read()
         query = query.replace('USERNAME', user)
         query = query.replace('STARTDATE', start_date)
@@ -55,7 +55,7 @@ def edits_0(user, start_date):
 
 def registration_date(user):
     conn = toolforge.connect('hywiki')
-    with open('./queries/registration.sql', 'r') as sql:
+    with open('./wikielections/queries/registration.sql', 'r') as sql:
         query = sql.read()
         query = query.replace('USERNAME', user)
         with conn.cursor() as cur:
