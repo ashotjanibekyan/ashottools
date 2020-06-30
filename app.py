@@ -13,16 +13,30 @@ def elections():
     if 'election' in getargs and 'name' in getargs and 'dateFrom' in getargs:
         date = datetime.datetime.strptime(getargs['dateFrom'], '%Y-%m-%d')
         if getargs['election'] == '1':
-            print(article_of_year(getargs['name'], d))
-            return render_template('elections.html', data=article_of_year(getargs['name'], date), getargs=getargs)
+            try:
+                return render_template('elections.html', data=article_of_year(getargs['name'], date), getargs=getargs)
+            except Exception as e:
+                return render_template('elections.html', error=str(e), getargs=getargs)
         elif getargs['election'] == '2':
-            return render_template('elections.html', data=featured_article(getargs['name'], date), getargs=getargs)
+            try:
+                return render_template('elections.html', data=featured_article(getargs['name'], date), getargs=getargs)
+            except Exception as e:
+                return render_template('elections.html', error=str(e), getargs=getargs)
         elif getargs['election'] == '3':
-            return render_template('elections.html', data=good_article(getargs['name'], date), getargs=getargs)
+            try:
+                return render_template('elections.html', data=good_article(getargs['name'], date), getargs=getargs)
+            except Exception as e:
+                return render_template('elections.html', error=str(e), getargs=getargs)
         elif getargs['election'] == '4':
-            return render_template('elections.html', data=admin(getargs['name'], date), getargs=getargs)
+            try:
+                return render_template('elections.html', data=admin(getargs['name'], date), getargs=getargs)
+            except Exception as e:
+                return render_template('elections.html', error=str(e), getargs=getargs)
         elif getargs['election'] == '5':
-            return render_template('elections.html', data=deletion(getargs['name'], date), getargs=getargs)
+            try:
+                return render_template('elections.html', data=deletion(getargs['name'], date), getargs=getargs)
+            except Exception as e:
+                return render_template('elections.html', error=str(e), getargs=getargs)
 
     return render_template('elections.html', data={}, getargs={})
 
