@@ -83,19 +83,19 @@ def base_stats(user, start_date):
 
 def base_analyse(stats, experience, edits, edits0, edits0m, edit1m, edit2m, edit3m):
     msg = {
-        'experience': f'Առնվազն {experience} ամիս վիքիստաժ',
-        'edits': f'Առնվազն {edits} խմբագրում',
-        'edits_0': f'Առնվազն {edits0} խմբագրում հոդվածում',
-        'edits0m': f'Առնվազն {edits0m} նախորդ ամսվա ընթացքում'
+        'experience': 'Առնվազն ' + str(experience) + ' ամիս վիքիստաժ',
+        'edits': f'Առնվազն ' + str(edits) + ' խմբագրում',
+        'edits_0': f'Առնվազն ' + str(edits0) + ' խմբագրում հոդվածում',
+        'edits0m': f'Առնվազն ' + str(edits0m) + ' նախորդ ամսվա ընթացքում'
     }
     if edit1m == edit2m == edit3m:
         msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին ամսական 1-ական գործողություն'
     else:
-        msg['last'] = f'Վերջին ամսվան նախորդող 3 ամիսներին համապատասխանաբար {edit1m}, {edit2m} և {edit3m} գործողություն'
+        msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին համապատասխանաբար ' + str(edit1m) + ', ' + str(edit2m) + ' և ' + str(edit3m) + ' գործողություն'
     result = [(stats[0], stats[0] >= experience, msg['experience']),
               (stats[1], stats[1] >= edits, msg['edits']),
-              (stats[2], stats[2] >= edits0, f'Առնվազն {edits0} խմբագրում հոդվածում'),
-              (stats[3], stats[3] >= edits0m, f'Առնվազն {edits0m} նախորդ ամսվա ընթացքում'),
+              (stats[2], stats[2] >= edits0, msg['edits_0']),
+              (stats[3], stats[3] >= edits0m, msg['edits0m']),
               (', '.join([str(stats[4]), str(stats[5]), str(stats[6])]),
                stats[4] >= edit1m and stats[5] >= edit2m and stats[6] >= edit3m, msg['last'])]
     return result
