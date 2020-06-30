@@ -85,8 +85,6 @@ def registration_date(user):
         "ususers": user
     })
     jsn = r.json()
-    print(jsn)
-    print('users' in jsn['query'])
     if 'query' in jsn and 'users' in jsn['query'] and 'registration' in jsn['query']['users'][0]:
         print(datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ"))
         return datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ")
