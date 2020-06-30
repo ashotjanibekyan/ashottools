@@ -1,5 +1,8 @@
 import toolforge
 import datetime
+import requests
+
+API_URL = 'https://hy.wikipedia.org/w/api.php'
 
 
 def timestamp_to_datetime(timestamp):
@@ -17,46 +20,78 @@ def datetime_to_timestamp(date):
 
 
 def edits(user, start_date, end_date=None):
-    conn = toolforge.connect('hywiki')
     start_date = datetime_to_timestamp(start_date)
-    if end_date:
-        end_date = datetime_to_timestamp(end_date)
-    else:
-        end_date = '00000000000000'
-    with open('./wikielections/queries/edits.sql', 'r') as sql:
-        query = sql.read()
-        query = query.replace('USERNAME', user)
-        query = query.replace('STARTDATE', start_date)
-        query = query.replace('ENDDATE', end_date)
-        with conn.cursor() as cur:
-            cur.execute(query)
-            results = cur.fetchall()
-            return results[0][0]
+    r = requests.get(url=API_URL, params={
+        "action": "query",
+        "format": "json",
+        "list": "usercontribs",
+        "uclimit": "max",
+        "ucstart": start_date,
+        "ucend": end_date,
+        "ucuser": user
+    })
+    jsn = r.json()
+    uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
+    contrb_num = len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
+    while uccontinue and contrb_num < 1000:
+        r = requests.get(url=API_URL, params={
+            "action": "query",
+            "format": "json",
+            "list": uccontinue,
+            "uclimit": "max",
+            "ucstart": start_date,
+            "ucend": end_date,
+            "ucuser": user
+        })
+        uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
+        contrb_num += len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
+    return contrb_num
 
 
 def edits_0(user, start_date):
-    conn = toolforge.connect('hywiki')
     start_date = datetime_to_timestamp(start_date)
-    with open('./wikielections/queries/edits_0.sql', 'r') as sql:
-        query = sql.read()
-        query = query.replace('USERNAME', user)
-        query = query.replace('STARTDATE', start_date)
-        with conn.cursor() as cur:
-            cur.execute(query)
-            results = cur.fetchall()
-            return results[0][0]
+    r = requests.get(url=API_URL, params={
+        "action": "query",
+        "format": "json",
+        "list": "usercontribs",
+        "uclimit": "max",
+        "ucstart": start_date,
+        "ucuser": user,
+        "ucnamespace": "4"
+    })
+    jsn = r.json()
+    uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
+    contrb_num = len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
+    while uccontinue and contrb_num < 1000:
+        r = requests.get(url=API_URL, params={
+            "action": "query",
+            "format": "json",
+            "list": uccontinue,
+            "uclimit": "max",
+            "ucstart": start_date,
+            "ucuser": user,
+            "ucnamespace": "4"
+        })
+        uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
+        contrb_num += len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
+    return contrb_num
 
 
 def registration_date(user):
-    conn = toolforge.connect('hywiki')
-    with open('./wikielections/queries/registration.sql', 'r') as sql:
-        query = sql.read()
-        query = query.replace('USERNAME', user)
-        with conn.cursor() as cur:
-            cur.execute(query)
-            results = cur.fetchall()
-            timestamp = results[0][0].decode('utf-8')
-    return timestamp_to_datetime(timestamp)
+    r = requests.get(API_URL, params={
+        "action": "query",
+        "format": "json",
+        "list": "users",
+        "usprop": "registration",
+        "ususers": user
+    })
+    jsn = r.json()
+    print(jsn)
+    print('users' in jsn['query'])
+    if 'query' in jsn and 'users' in jsn['query'] and 'registration' in jsn['query']['users'][0]:
+        print(datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ"))
+        return datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ")
+    return None
 
 
 def base_stats(user, start_date):
@@ -85,12 +120,14 @@ def base_analyse(stats, experience, edits, edits0, edits0m, edit1m, edit2m, edit
     if edit1m == edit2m == edit3m:
         msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին ամսական 1-ական գործողություն'
     else:
-        msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին համապատասխանաբար ' + str(edit1m) + ', ' + str(edit2m) + ' և ' + str(edit3m) + ' գործողություն'
-    result = [(stats[0], stats[0] >= experience, msg['experience']),
+        msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին համապատասխանաբար ' + str(edit1m) + ', ' + str(
+            edit2m) + ' և ' + str(edit3m) + ' գործողություն'
+    result = [(int(stats[0]), stats[0] >= experience, msg['experience']),
               (stats[1], stats[1] >= edits, msg['edits']),
               (stats[2], stats[2] >= edits0, msg['edits_0']),
               (stats[3], stats[3] >= edits0m, msg['edits0m']),
-              (', '.join([str(stats[4]), str(stats[5]), str(stats[6])]),
+              (', '.join([str(stats[4]).replace('1000', '1000+'), str(stats[5]).replace('1000', '1000+'),
+                          str(stats[6]).replace('1000', '1000+')]),
                stats[4] >= edit1m and stats[5] >= edit2m and stats[6] >= edit3m, msg['last'])]
     return result
 
@@ -137,9 +174,7 @@ def deletion(user, start_date):
     months = (start_date - user_reg).days / 30
     user_edits = edits(user, start_date)
     user_edits_0 = edits_0(user, start_date)
-    result = [(months, months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'),
+    result = [(int(months), months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'),
               (user_edits, user_edits >= 500, 'Առնվազն 500 խմբագրում'),
               (user_edits_0, user_edits_0 >= 100, 'Առնվազն 500 խմբագրում հոդվածում')]
     return result
-
-#test

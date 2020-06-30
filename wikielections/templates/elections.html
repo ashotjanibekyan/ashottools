@@ -47,9 +47,7 @@
         <thead>
         <tr>
             <th style="width: 60%" scope="col">Անհրաժեշտ է</th>
-            <th style="width: 25%" scope="col">
-                <span data-toggle="tooltip" data-placement="top" title="Առնվազն">Ունի</span>
-            </th>
+            <th style="width: 25%" scope="col">Ունի</th>
             <th style="width: 15%" scope="col">Բավարարո՞ւմ է</th>
         </tr>
         </thead>
@@ -57,7 +55,7 @@
         {% for row in data %}
             <tr class="{% if row[1] %}bg-success{% else %}bg-danger{% endif %}">
                 <td>{{ row[2] }}</td>
-                <td>{{ row[0] }}</td>
+                <td>{{ row[0] }}{% if row[0] == 1000 %}+{% endif %}</td>
                 <td>{% if row[1] %}
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-all" fill="currentColor"
                          xmlns="http://www.w3.org/2000/svg">
