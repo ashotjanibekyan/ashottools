@@ -92,7 +92,7 @@ def base_analyse(stats, experience, edits, edits0, edits0m, edit1m, edit2m, edit
         'experience': 'Առնվազն ' + str(experience) + ' ամիս վիքիստաժ',
         'edits': 'Առնվազն ' + str(edits) + ' խմբագրում',
         'edits_0': 'Առնվազն ' + str(edits0) + ' խմբագրում հոդվածում',
-        'edits0m': 'Առնվազն ' + str(edits0m) + ' նախորդ ամսվա ընթացքում'
+        'edits0m': 'Առնվազն ' + str(edits0m) + ' խմբագրում նախորդ ամսվա ընթացքում'
     }
     if edit1m == edit2m == edit3m:
         msg['last'] = 'Վերջին ամսվան նախորդող 3 ամիսներին ամսական 1-ական գործողություն'

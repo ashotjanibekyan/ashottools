@@ -21,6 +21,7 @@ def index():
 def random():
     return redirect('https://hy.wikipedia.org/wiki/' + randompage.get_random_not_bot())
 
+
 @app.route('/wiki-elections', methods=['GET', 'POST'])
 def elections():
     app.template_folder = os.path.abspath('./wikielections/templates')
