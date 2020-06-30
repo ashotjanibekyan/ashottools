@@ -69,7 +69,7 @@
             }
             numberOfUsers = users.length;
             users.forEach((user) => {
-                const url = 'http://127.0.0.1:5000/wiki-elections?format=json&name=' + user + '&election=' + form.elements[1].value + '&dateFrom=' + form.elements[2].value;
+                const url = 'https://ashottools.toolforge.org/wiki-elections?format=json&name=' + user + '&election=' + form.elements[1].value + '&dateFrom=' + form.elements[2].value;
                 $('#usersList').empty();
                 $.getJSON(url, function (userdata) {
                     let bool = true;
