@@ -18,7 +18,7 @@ def datetime_to_timestamp(date):
     return None
 
 
-def edits(user, start_date, end_date=None):
+def edits(user, start_date, end_date=None, ns=None):
     start_date = datetime_to_timestamp(start_date)
     r = requests.get(url=API_URL, params={
         "action": "query",
@@ -27,53 +27,33 @@ def edits(user, start_date, end_date=None):
         "uclimit": "max",
         "ucstart": start_date,
         "ucend": end_date,
-        "ucuser": user
+        "ucuser": user,
+        "ucnamespace": ns
     })
     jsn = r.json()
     uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
     contrb_num = len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
     while uccontinue and contrb_num < 1000:
+        print(uccontinue)
         r = requests.get(url=API_URL, params={
             "action": "query",
             "format": "json",
-            "list": uccontinue,
+            "list": "usercontribs",
             "uclimit": "max",
             "ucstart": start_date,
             "ucend": end_date,
-            "ucuser": user
+            "ucuser": user,
+            "uccontinue": uccontinue,
+            "ucnamespace": ns
         })
+        jsn = r.json()
         uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
         contrb_num += len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
     return contrb_num
 
 
 def edits_0(user, start_date):
-    start_date = datetime_to_timestamp(start_date)
-    r = requests.get(url=API_URL, params={
-        "action": "query",
-        "format": "json",
-        "list": "usercontribs",
-        "uclimit": "max",
-        "ucstart": start_date,
-        "ucuser": user,
-        "ucnamespace": "4"
-    })
-    jsn = r.json()
-    uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
-    contrb_num = len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
-    while uccontinue and contrb_num < 1000:
-        r = requests.get(url=API_URL, params={
-            "action": "query",
-            "format": "json",
-            "list": uccontinue,
-            "uclimit": "max",
-            "ucstart": start_date,
-            "ucuser": user,
-            "ucnamespace": "4"
-        })
-        uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
-        contrb_num += len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
-    return contrb_num
+    return edits(user, start_date, ns=0)
 
 
 def registration_date(user):
