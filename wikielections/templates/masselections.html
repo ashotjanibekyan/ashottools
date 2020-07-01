@@ -31,6 +31,9 @@
             <span class="sr-only">Սպասել...</span>
         </div>
     </div>
+    <div class="d-flex justify-content-center">
+        <div id="numberOfUsers"></div>
+    </div>
     <ul id="usersList" class="list-group">
     </ul>
 {% endblock %}
@@ -68,6 +71,8 @@
                 users = remove_duplicates(form.elements[0].value.split('\n'));
             }
             numberOfUsers = users.length;
+            $('#numberOfUsers').text('Ունենք ' + numberOfUsers + ' մասնակից')
+            console.log(users)
             users.forEach((user) => {
                 const url = '/wiki-elections?format=json&name=' + user + '&election=' + form.elements[1].value + '&dateFrom=' + form.elements[2].value;
                 $('#usersList').empty();

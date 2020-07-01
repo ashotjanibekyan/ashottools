@@ -55,6 +55,21 @@ def edits_0(user, start_date):
     return edits(user, start_date, ns=0)
 
 
+def first_edit_date(user):
+    r = requests.get(API_URL, params={
+        "action": "query",
+        "format": "json",
+        "list": "usercontribs",
+        "uclimit": "1",
+        "ucuser": user,
+        "ucdir": "newer",
+        "ucprop": "timestamp"
+    })
+    jsn = r.json()
+    if 'query' in jsn and 'usercontribs' in jsn['query'] and jsn['query']['usercontribs']:
+        return datetime.datetime.strptime(jsn['query']['usercontribs'][0]['timestamp'], "%Y-%m-%dT%H:%M:%SZ")
+    return None
+
 def registration_date(user):
     r = requests.get(API_URL, params={
         "action": "query",
@@ -65,7 +80,10 @@ def registration_date(user):
     })
     jsn = r.json()
     if 'query' in jsn and 'users' in jsn['query'] and 'registration' in jsn['query']['users'][0]:
-        return datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ")
+        if jsn['query']['users'][0]['registration']:
+            return datetime.datetime.strptime(jsn['query']['users'][0]['registration'], "%Y-%m-%dT%H:%M:%SZ")
+        else:
+            return first_edit_date(user)
     return None
 
 

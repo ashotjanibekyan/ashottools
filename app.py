@@ -51,6 +51,8 @@ def elections():
                     return jsonify(deletion(getargs['name'], date))
                 return render_template('elections.html', data=deletion(getargs['name'], date), getargs=getargs)
         except Exception as e:
+            if 'format' in getargs and getargs['format'] == 'json':
+                return jsonify(e)
             return render_template('elections.html', error=str(e), getargs=getargs)
 
     return render_template('elections.html', data={}, getargs=getargs)
