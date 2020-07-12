@@ -11,7 +11,8 @@ where rev_parent_id = 0
         (select page_title
          from categorylinks
          join page on page_id = cl_from
-         where cl_to = 'CAT')'''
+         where cl_to = 'CAT')
+order by rev_timestamp'''
 
 ids = {
     '1': 'Անաղբյուր_և_լրացուցիչ_աղբյուրների_կարիք_ունեցող_հոդվածներ',
