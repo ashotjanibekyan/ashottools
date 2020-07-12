@@ -2,6 +2,7 @@ import os
 from randompage import randompage
 from flask import Flask, request, render_template, send_from_directory, redirect, jsonify
 from wikielections.utils import *
+from mea_culpa import utils as mcutils
 import datetime
 
 app = Flask(__name__)
@@ -24,7 +25,6 @@ def random():
 
 @app.route('/wiki-elections', methods=['GET', 'POST'])
 def elections():
-    app.template_folder = os.path.abspath('./wikielections/templates')
     getargs = request.args.to_dict()
     if 'election' in getargs and getargs['election'] and 'name' in getargs and getargs[
         'name'] and 'dateFrom' in getargs and getargs['dateFrom']:
@@ -60,9 +60,17 @@ def elections():
 
 @app.route('/wiki-elections/bulk', methods=['GET', 'POST'])
 def mass_elections():
-    app.template_folder = os.path.abspath('./wikielections/templates')
     getargs = request.args.to_dict()
     return render_template('masselections.html', data={}, getargs=getargs)
+
+
+@app.route('/mea_culpa', methods=['GET'])
+def mea_culpa():
+    getargs = request.args.to_dict()
+    if 'name' in getargs and getargs['name'] and 'culpa' in getargs and getargs['culpa']:
+        articles = mcutils.get_data(getargs['name'], getargs['culpa'])
+        return render_template('mea_culpa.html', username=getargs['name'], articles=articles)
+    return render_template('mea_culpa.html')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,35 @@
+import toolforge
+
+query_template = '''select page_title, page_len, rev_timestamp from page
+	join revision on page_id = rev_page
+    join actor on actor_id = rev_actor
+where rev_parent_id = 0
+	and actor_name = 'USER'
+    and page_is_redirect = 0
+    and page_namespace = 0
+    and page_title in
+        (select page_title
+         from categorylinks
+         join page on page_id = cl_from
+         where cl_to = 'CAT')'''
+
+ids = {
+    '1': 'Անաղբյուր_և_լրացուցիչ_աղբյուրների_կարիք_ունեցող_հոդվածներ',
+    '2': 'Անավարտ_հոդվածներ',
+    '3': 'Վիքիֆիկացման_ենթակա_հոդվածներ'
+}
+
+
+def get_data(username, cat_id):
+    if cat_id not in ids:
+        return []
+    conn = toolforge.connect('hywiki')
+    query = query_template.replace('CAT', ids[cat_id])
+    query = query.replace('USER', username)
+    with conn.cursor() as cur:
+        cur.execute(query)
+        rows = cur.fetchall()
+    results = []
+    for row in rows:
+        results.append([row[0].decode('utf-8'), row[1], row[2].decode('utf-8')])
+    return results
