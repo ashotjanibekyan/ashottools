@@ -24,7 +24,7 @@ ids = {
 def get_data(username, cat_id):
     if cat_id not in ids:
         return []
-    username = username.capitalize()
+    username = username[0].upper() + username[1:]
     conn = toolforge.connect('hywiki')
     with conn.cursor() as cur:
         cur.execute(query_template, (username, ids[cat_id]))
