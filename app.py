@@ -68,7 +68,6 @@ def mass_elections():
 def mea_culpa():
     getargs = request.args.to_dict()
     if 'name' in getargs and getargs['name'] and 'culpa' in getargs and getargs['culpa']:
-        print('mea_culpa', getargs)
         articles = mcutils.get_data(getargs['name'], getargs['culpa'])
         return render_template('mea_culpa.html', username=getargs['name'], articles=articles, culpa=getargs['culpa'])
     return render_template('mea_culpa.html')

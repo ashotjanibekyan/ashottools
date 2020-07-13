@@ -21,9 +21,10 @@ ids = {
 }
 
 
-def get_data(username, cat_id):
+def get_data(username: str, cat_id):
     if cat_id not in ids:
         return []
+    username = username.strip()
     username = username[0].upper() + username[1:]
     conn = toolforge.connect('hywiki')
     with conn.cursor() as cur:
