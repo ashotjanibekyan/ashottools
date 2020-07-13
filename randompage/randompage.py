@@ -15,7 +15,7 @@ def get_bots():
     jsn = r.json()
     if 'query' in jsn and 'allusers' in jsn['query']:
         bots = [bot['userid'] for bot in jsn['query']['allusers']]
-    return bots
+    return bots + ['MusikyanBot']
 
 
 def get_random_article(ns=0, redirect=None):
@@ -46,7 +46,7 @@ def get_creator(title):
     jsn = r.json()
     try:
         return jsn['query']['pages'][0]['revisions'][0]['userid']
-    except:
+    except Exception as e:
         return 0
 
 
