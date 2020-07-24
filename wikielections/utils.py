@@ -1,5 +1,6 @@
 import datetime
 import requests
+import toolforge
 
 API_URL = 'https://hy.wikipedia.org/w/api.php'
 
@@ -16,6 +17,27 @@ def datetime_to_timestamp(date):
     if type(date) == datetime.datetime:
         return date.strftime('%Y%m%d%H%M%S')
     return None
+
+
+def get_edited_evaluation_pages(user, start_date):
+    conn = toolforge.connect('hywiki')
+    query = '''SELECT DISTINCT page_title
+    FROM page
+    JOIN revision ON page_id = rev_page
+    JOIN actor ON actor_id = rev_actor
+    WHERE actor_name = %s
+        AND page_is_redirect = 0
+        AND page_namespace = 4
+        AND page_title LIKE 'Գնահատում/%'
+        AND page_title != 'Գնահատում/Գլխագրի_տեքստ'
+        AND rev_timestamp < ''' + start_date + " ORDER BY rev_timestamp"
+    with conn.cursor() as cur:
+        cur.execute(query, user)
+        rows = cur.fetchall()
+    results = []
+    for row in rows:
+        results.append('Վիքիպեդիա:' + row[0].decode('utf-8'))
+    return results
 
 
 def edits(user, start_date, end_date=None, ns=None):
@@ -69,6 +91,7 @@ def first_edit_date(user):
     if 'query' in jsn and 'usercontribs' in jsn['query'] and jsn['query']['usercontribs']:
         return datetime.datetime.strptime(jsn['query']['usercontribs'][0]['timestamp'], "%Y-%m-%dT%H:%M:%SZ")
     return None
+
 
 def registration_date(user):
     r = requests.get(API_URL, params={
@@ -173,3 +196,19 @@ def deletion(user, start_date):
               [user_edits, user_edits >= 500, 'Առնվազն 500 խմբագրում'],
               [user_edits_0, user_edits_0 >= 100, 'Առնվազն 500 խմբագրում հոդվածում']]
     return result
+
+
+def evaluation_team(user, start_date):
+    # 24 ամիս վիքիստաժ
+    # Նվազագույնը 6000 գործողություն
+    # Նվազագույնը 3000 գործողություն հոդվածներում
+
+    user_reg = registration_date(user)
+    months = (start_date - user_reg).days / 30 if user_reg else 0
+    user_edits = edits(user, start_date) if user_reg else 0
+    user_edits_0 = edits_0(user, start_date) if user_reg else 0
+    edited_evaluation_pages = get_edited_evaluation_pages(user, datetime_to_timestamp(start_date))
+    result = [[int(months), months >= 24, 'Առնվազն 24 ամիս վիքիստաժ'],
+              [user_edits, user_edits >= 6000, 'Առնվազն 6000 խմբագրում'],
+              [user_edits_0, user_edits_0 >= 3000, 'Առնվազն 3000 խմբագրում հոդվածում']]
+    return result, edited_evaluation_pages

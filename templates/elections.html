@@ -18,12 +18,12 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
                 {% block navbar %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="/wiki-elections">Անհատական</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/wiki-elections/bulk">Մասնակիցների խումբ</a>
-                </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/wiki-elections">Անհատական</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/wiki-elections/bulk">Մասնակիցների խումբ</a>
+                    </li>
                 {% endblock %}
             </ul>
             <span class="navbar-text">
@@ -31,37 +31,38 @@
     </span>
         </div>
     </nav>
-{% block formhead %}
-    <form id="mainform" method="GET">
-{% endblock %}
-        {% block usersinput %}
-            <div class="form-group">
-                <label for="username">Մասնակցային անուն</label>
-                <input autocomplete="off" type="text" class="form-control" id="username" list="usernames"
-                       value="{{ getargs.name }}"
-                       name="name"
-                       placeholder="Մասնակցային անուն" required>
-                <datalist id="usernames"></datalist>
-            </div>
-        {% endblock %}
+    {% block formhead %}
+        <form id="mainform" method="GET">
+    {% endblock %}
+    {% block usersinput %}
         <div class="form-group">
-            <label for="election">Քվեարկություն</label>
-            <select name="election" class="form-control" id="election" required>
-                <option value="1"{% if getargs.election == '1' %} selected {% endif %}>Տարվա հոդված</option>
-                <option value="2"{% if getargs.election == '2' %} selected {% endif %}>Ընտրյալ հոդած</option>
-                <option value="3"{% if getargs.election == '3' %} selected {% endif %}>Լավ հոդված</option>
-                <option value="4"{% if getargs.election == '4' %} selected {% endif %}>Ադմինիստրատորի իրավունքների
-                    դիմում
-                </option>
-                <option value="5"{% if getargs.election == '5' %} selected {% endif %}>Հոդվածի ջնջում</option>
-            </select>
+            <label for="username">Մասնակցային անուն</label>
+            <input autocomplete="off" type="text" class="form-control" id="username" list="usernames"
+                   value="{{ getargs.name }}"
+                   name="name"
+                   placeholder="Մասնակցային անուն" required>
+            <datalist id="usernames"></datalist>
         </div>
-        <div class="form-group">
-            <label for="dateFrom">Քվեարկությունը սկսվել է</label>
-            <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="{{ getargs.dateFrom }}"
-                   required>
-        </div>
-        <input type="submit" class="btn btn-primary mb-2" value="Ստուգել"/>
+    {% endblock %}
+    <div class="form-group">
+        <label for="election">Քվեարկություն</label>
+        <select name="election" class="form-control" id="election" required>
+            <option value="1"{% if getargs.election == '1' %} selected {% endif %}>Տարվա հոդված</option>
+            <option value="2"{% if getargs.election == '2' %} selected {% endif %}>Ընտրյալ հոդած</option>
+            <option value="3"{% if getargs.election == '3' %} selected {% endif %}>Լավ հոդված</option>
+            <option value="4"{% if getargs.election == '4' %} selected {% endif %}>Ադմինիստրատորի իրավունքների
+                դիմում
+            </option>
+            <option value="5"{% if getargs.election == '5' %} selected {% endif %}>Հոդվածի ջնջում</option>
+            <option value="6"{% if getargs.election == '6' %} selected {% endif %}>Գնահատման խմբի թեկնածու</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="dateFrom">Քվեարկությունը սկսվել է</label>
+        <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="{{ getargs.dateFrom }}"
+               required>
+    </div>
+    <input type="submit" class="btn btn-primary mb-2" value="Ստուգել"/>
 
     </form>
     {% block result %}
@@ -97,6 +98,22 @@
                             </svg>
                         {% endif %}
                         </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        {% if pages %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 70%" scope="col">Մասնակիցը խմբագրել է հետևյալ գնահատման էջերում</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in pages %}
+                    <tr>
+                        <td><a target="_blank" href="https://hy.wikipedia.org/wiki/{{ row }}">{{ row }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

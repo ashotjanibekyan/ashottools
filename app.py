@@ -50,6 +50,11 @@ def elections():
                 if 'format' in getargs and getargs['format'] == 'json':
                     return jsonify(deletion(getargs['name'], date))
                 return render_template('elections.html', data=deletion(getargs['name'], date), getargs=getargs)
+            elif getargs['election'] == '6':
+                if 'format' in getargs and getargs['format'] == 'json':
+                    return jsonify(deletion(getargs['name'], date))
+                data, pages = evaluation_team(getargs['name'], date)
+                return render_template('elections.html', data=data, getargs=getargs, pages=pages)
         except Exception as e:
             if 'format' in getargs and getargs['format'] == 'json':
                 return jsonify(e)
