@@ -20,6 +20,8 @@ def datetime_to_timestamp(date):
 
 
 def get_edited_evaluation_pages(user, start_date):
+    user = user.strip()
+    user = user[0].upper() + user[1:]
     conn = toolforge.connect('hywiki')
     query = '''SELECT DISTINCT page_title
     FROM page
