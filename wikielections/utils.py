@@ -30,7 +30,7 @@ def get_edited_evaluation_pages(user, start_date):
         AND page_namespace = 4
         AND page_title LIKE 'Գնահատում/%%'
         AND page_title NOT LIKE 'Գնահատում/Պահոց%%'
-        AND page_title != 'Գնահատում/Գլխագրի_տեքստ'
+        AND page_title NOT IN  ('Գնահատում/Գլխագրի_տեքստ', 'Գնահատում/Օրինակ')
         AND rev_timestamp < ''' + start_date + " ORDER BY rev_timestamp"
     with conn.cursor() as cur:
         cur.execute(query, user)
