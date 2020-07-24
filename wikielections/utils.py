@@ -55,7 +55,7 @@ def edits(user, start_date, end_date=None, ns=None):
     jsn = r.json()
     uccontinue = jsn['continue']['uccontinue'] if 'continue' in jsn and 'uccontinue' in jsn['continue'] else None
     contrb_num = len(jsn['query']['usercontribs']) if 'query' in jsn and 'usercontribs' in jsn['query'] else 0
-    while uccontinue and contrb_num < 1000:
+    while uccontinue and contrb_num < 6000:
         r = requests.get(url=API_URL, params={
             "action": "query",
             "format": "json",
@@ -144,8 +144,8 @@ def base_analyse(stats, experience, edits, edits0, edits0m, edit1m, edit2m, edit
               [stats[1], stats[1] >= edits, msg['edits']],
               [stats[2], stats[2] >= edits0, msg['edits_0']],
               [stats[3], stats[3] >= edits0m, msg['edits0m']],
-              [', '.join([str(stats[4]).replace('1000', '1000+'), str(stats[5]).replace('1000', '1000+'),
-                          str(stats[6]).replace('1000', '1000+')]),
+              [', '.join([str(stats[4]).replace('6000', '6000+'), str(stats[5]).replace('6000', '6000+'),
+                          str(stats[6]).replace('6000', '6000+')]),
                stats[4] >= edit1m and stats[5] >= edit2m and stats[6] >= edit3m, msg['last']]]
     return result
 
