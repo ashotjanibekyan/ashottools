@@ -20,6 +20,11 @@ def index():
 
 @app.route('/random')
 def random():
+    getargs = request.args.to_dict()
+    if 'project' in getargs and getargs['project'] == 'wikidata' and 'with' in getargs and 'without' in getargs:
+        with_lang = getargs['with'].split('|')
+        without_lang = getargs['without']
+        return redirect('https://www.wikidata.org/wiki/' + randompage.get_random_item_by_label(with_lang, without_lang))
     return redirect('https://hy.wikipedia.org/wiki/' + randompage.get_random_not_bot())
 
 
