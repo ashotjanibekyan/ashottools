@@ -15,7 +15,8 @@ def get_bots():
     jsn = r.json()
     if 'query' in jsn and 'allusers' in jsn['query']:
         bots = [bot['userid'] for bot in jsn['query']['allusers']]
-    return bots + ['MusikyanBot']
+    bots += [24352]  # ['MusikyanBot']
+    return bots
 
 
 def get_random_article(ns=0, redirect=None):
