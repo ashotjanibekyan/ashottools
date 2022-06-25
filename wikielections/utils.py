@@ -4,6 +4,16 @@ import toolforge
 
 API_URL = 'https://hy.wikipedia.org/w/api.php'
 
+def is_request_args_valid(getargs):
+    required_args = ['election', 'name', 'dateFrom']
+    for required_arg in required_args:
+        if required_arg not in getargs or not getargs[required_arg]:
+            return False
+    if not getargs['election'].isdigit():
+        return False
+    if int(getargs['election']) < 0 or int(getargs['election']) > 7:
+        return False
+    return True
 
 def timestamp_to_datetime(timestamp):
     if type(timestamp) == int:
@@ -215,3 +225,44 @@ def evaluation_team(user, start_date):
               [user_edits, user_edits >= 6000, 'Առնվազն 6000 խմբագրում'],
               [user_edits_0, user_edits_0 >= 3000, 'Առնվազն 3000 խմբագրում հոդվածում']]
     return result, edited_evaluation_pages
+
+def support_wikimedia_armenia(user):
+    # 6 ամիս վիքիստաժ
+    # Նվազագույ 300 ներդրում
+    r = requests.get(API_URL, params={
+        "action": "query",
+        "format": "json",
+        "meta": "globaluserinfo",
+        "guiprop": "editcount",
+        "guiuser": user
+    })
+    jsn = r.json()
+    if 'query' in jsn and 'globaluserinfo' in jsn['query']:
+        registration = datetime.datetime.strptime(
+            jsn['query']['globaluserinfo']['registration'], 
+            "%Y-%m-%dT%H:%M:%SZ")
+        months = (datetime.datetime.now() - registration).days / 30 if registration else 0
+        editcount = int(jsn['query']['globaluserinfo']['editcount'])
+
+    result = [[int(months), months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'],
+              [editcount, editcount >= 500, 'Առնվազն 500 խմբագրում']]
+    return result
+
+
+def get_election_data(election, user, date):
+    if election == '1':
+        return article_of_year(user, date)
+    elif election == '2':
+        return featured_article(user, date)
+    elif election == '3':
+        return good_article(user, date)
+    elif election == '4':
+        return admin(user, date)
+    elif election == '5':
+        return deletion(user, date)
+    elif election == '6':
+        return evaluation_team(user, date)
+    elif election == '7':
+        return support_wikimedia_armenia(user)
+
+

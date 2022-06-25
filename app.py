@@ -31,35 +31,17 @@ def random():
 @app.route('/wiki-elections', methods=['GET', 'POST'])
 def elections():
     getargs = request.args.to_dict()
-    if 'election' in getargs and getargs['election'] and 'name' in getargs and getargs[
-        'name'] and 'dateFrom' in getargs and getargs['dateFrom']:
+    if is_request_args_valid(getargs):
+        
+        print(getargs)
         date = datetime.datetime.strptime(getargs['dateFrom'], '%Y-%m-%d')
         try:
-            if getargs['election'] == '1':
-                if 'format' in getargs and getargs['format'] == 'json':
-                    return jsonify(article_of_year(getargs['name'], date))
-                return render_template('elections.html', data=article_of_year(getargs['name'], date), getargs=getargs)
-            elif getargs['election'] == '2':
-                if 'format' in getargs and getargs['format'] == 'json':
-                    return jsonify(featured_article(getargs['name'], date))
-                return render_template('elections.html', data=featured_article(getargs['name'], date), getargs=getargs)
-            elif getargs['election'] == '3':
-                if 'format' in getargs and getargs['format'] == 'json':
-                    return jsonify(good_article(getargs['name'], date))
-                return render_template('elections.html', data=good_article(getargs['name'], date), getargs=getargs)
-            elif getargs['election'] == '4':
-                if 'format' in getargs and getargs['format'] == 'json':
-                    return jsonify(admin(getargs['name'], date))
-                return render_template('elections.html', data=admin(getargs['name'], date), getargs=getargs)
-            elif getargs['election'] == '5':
-                if 'format' in getargs and getargs['format'] == 'json':
-                    return jsonify(deletion(getargs['name'], date))
-                return render_template('elections.html', data=deletion(getargs['name'], date), getargs=getargs)
-            elif getargs['election'] == '6':
-                if 'format' in getargs and getargs['format'] == 'json':
-                    return jsonify(deletion(getargs['name'], date))
-                data, pages = evaluation_team(getargs['name'], date)
-                return render_template('elections.html', data=data, getargs=getargs, pages=pages)
+            data = get_election_data(getargs['election'], getargs['name'], date)
+            if 'format' in getargs and getargs['format'] == 'json':
+                return jsonify(data)
+            if getargs['election'] == '6':
+                return render_template('elections.html', data=data[0], getargs=getargs, pages=data[1])
+            return render_template('elections.html', data=data, getargs=getargs)
         except Exception as e:
             if 'format' in getargs and getargs['format'] == 'json':
                 return jsonify(e)
