@@ -1,3 +1,4 @@
+from email.utils import getaddresses
 import os
 from randompage import randompage
 from flask import Flask, request, render_template, send_from_directory, redirect, jsonify
@@ -47,6 +48,18 @@ def elections():
 
     return render_template('elections.html', data={}, getargs=getargs)
 
+@app.route('/wikimedia_armenia', methods=['GET', 'POST'])
+def wikimedia_armenia():
+    getargs = request.args.to_dict()
+    if 'name' in getargs and getargs['name'] and 'dateFrom' in getargs and getargs['dateFrom']:
+        date = datetime.datetime.strptime(getargs['dateFrom'], '%Y-%m-%d')
+        try:
+            data = get_election_data('7', getargs['name'], date)
+            return render_template('wikimedia_armenia.html', data=data, getargs=getargs)
+        except Exception as e:
+            return render_template('wikimedia_armenia.html', error=str(e), getargs=getargs)
+
+    return render_template('wikimedia_armenia.html', data={}, getargs=getargs)
 
 @app.route('/wiki-elections/bulk', methods=['GET', 'POST'])
 def mass_elections():

@@ -244,8 +244,8 @@ def support_wikimedia_armenia(user):
         months = (datetime.datetime.now() - registration).days / 30 if registration else 0
         editcount = int(jsn['query']['globaluserinfo']['editcount'])
 
-    result = [[int(months), months >= 6, 'Առնվազն 6 ամիս վիքիստաժ'],
-              [editcount, editcount >= 500, 'Առնվազն 500 խմբագրում']]
+    result = [[int(months), months >= 6, 'At least 6 months old account'],
+              [editcount, editcount >= 300, 'At least 300 edits']]
     return result
 
 

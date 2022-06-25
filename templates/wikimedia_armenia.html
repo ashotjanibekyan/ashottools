@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hy">
+<html lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -10,7 +10,7 @@
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/9/92/Roman_Election.jpg">
-    <title>Ընտրություններ Հայերեն Վիքիպեդիայում</title>
+    <title>Wikimedia Armenia Active Contributors' Support</title>
 </head>
 <body>
 <div class="container">
@@ -19,15 +19,12 @@
             <ul class="navbar-nav mr-auto">
                 {% block navbar %}
                     <li class="nav-item active">
-                        <a class="nav-link" href="/wiki-elections">Անհատական</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/wiki-elections/bulk">Մասնակիցների խումբ</a>
+                        <a class="nav-link" href="/wikimedia_armenia">Wikimedia Armenia Active Contributor</a>
                     </li>
                 {% endblock %}
             </ul>
             <span class="navbar-text">
-      Ստուգել Հայերեն Վիքիպեդիայում մասնակիցների քվեարկելու իրավունքը
+      Check your account eligibility
     </span>
         </div>
     </nav>
@@ -36,33 +33,20 @@
     {% endblock %}
     {% block usersinput %}
         <div class="form-group">
-            <label for="username">Մասնակցային անուն</label>
+            <label for="username">Userame</label>
             <input autocomplete="off" type="text" class="form-control" id="username" list="usernames"
                    value="{{ getargs.name }}"
                    name="name"
-                   placeholder="Մասնակցային անուն" required>
+                   placeholder="Userame" required>
             <datalist id="usernames"></datalist>
         </div>
     {% endblock %}
     <div class="form-group">
-        <label for="election">Քվեարկություն</label>
-        <select name="election" class="form-control" id="election" required>
-            <option value="1"{% if getargs.election == '1' %} selected {% endif %}>Տարվա հոդված</option>
-            <option value="2"{% if getargs.election == '2' %} selected {% endif %}>Ընտրյալ հոդած</option>
-            <option value="3"{% if getargs.election == '3' %} selected {% endif %}>Լավ հոդված</option>
-            <option value="4"{% if getargs.election == '4' %} selected {% endif %}>Ադմինիստրատորի իրավունքների
-                դիմում
-            </option>
-            <option value="5"{% if getargs.election == '5' %} selected {% endif %}>Հոդվածի ջնջում</option>
-            <option value="6"{% if getargs.election == '6' %} selected {% endif %}>Գնահատման խմբի թեկնածու</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="dateFrom">Քվեարկությունը սկսվել է</label>
+        <label for="dateFrom">Start date</label>
         <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="{{ getargs.dateFrom }}"
                required>
     </div>
-    <input type="submit" class="btn btn-primary mb-2" value="Ստուգել"/>
+    <input type="submit" class="btn btn-primary mb-2" value="Check"/>
 
     </form>
     {% block result %}
@@ -70,9 +54,9 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th style="width: 60%" scope="col">Անհրաժեշտ է</th>
-                    <th style="width: 25%" scope="col">Ունի</th>
-                    <th style="width: 15%" scope="col">Բավարարո՞ւմ է</th>
+                    <th style="width: 60%" scope="col">Minimum required/th>
+                    <th style="width: 25%" scope="col">Has</th>
+                    <th style="width: 15%" scope="col">Is enough?</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -103,31 +87,10 @@
                 </tbody>
             </table>
         {% endif %}
-        {% if pages %}
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th style="width: 70%" scope="col">Մասնակիցը խմբագրել է հետևյալ գնահատման էջերում</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for row in pages %}
-                    <tr>
-                        <td><a target="_blank" href="https://hy.wikipedia.org/wiki/{{ row }}">{{ row }}</a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
         {% if error %}
             {{ error }}
         {% endif %}
     {% endblock %}
-    <footer class="footer">
-        <p class="text-sm-center"><small>Թերությունների կամ առաջարկների դեպքում գրել <a
-                href="https://hy.wikipedia.org/wiki/%D5%84%D5%A1%D5%BD%D5%B6%D5%A1%D5%AF%D6%81%D5%AB_%D6%84%D5%B6%D5%B6%D5%A1%D6%80%D5%AF%D5%B8%D6%82%D5%B4:%D4%B1%D5%B7%D5%B8%D5%BF%D5%8F%D5%86%D5%82">ԱշոտՏՆՂ</a>
-            մասնակցին</small></p>
-    </footer>
 </body>
 </div>
 
