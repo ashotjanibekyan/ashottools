@@ -32,8 +32,6 @@ def random():
 def elections():
     getargs = request.args.to_dict()
     if is_request_args_valid(getargs):
-        
-        print(getargs)
         date = datetime.datetime.strptime(getargs['dateFrom'], '%Y-%m-%d')
         try:
             data = get_election_data(getargs['election'], getargs['name'], date)
